@@ -7,8 +7,21 @@ console.log('Vamos fazer!!!')
 const canvas = document.querySelector('canvas') as HTMLCanvasElement;
 const context:any = canvas.getContext('2d');
 
+interface screensGame {
+    begin: object,
+    game: object,
+    end: object
+}
 
-
+interface startGame {
+    spriteX: number,
+    spriteY: number,
+    width: number,
+    height: number,
+    x: number,
+    y: number,
+    draw:Function
+}
 interface flappyCoordinates {
     spriteX: number,
     spriteY: number,
@@ -39,6 +52,24 @@ interface backGroundCoordinates {
     y: number,
     draw:Function
 }
+
+//*Chão
+const start:startGame = {
+    spriteX: 135,
+    spriteY: 0,
+    width: 175,
+    height: 153,
+    x: (canvas.width / 2) - 174 / 2,
+    y: 50,
+    draw(){
+        context.drawImage(sprites,
+            start.spriteX, start.spriteY, //Sprite X e Y 
+            start.width, start.height, //Tamanho do recorte na sprite (Tamanho: largura e altura)
+            start.x, start.y, //Posição no HTML aonde irá aparecer a imagem
+            start.width, start.height//Tamanho da imagem (Tamanho: largura e altura)
+            );  
+        },
+};
 
 //*Flappy
 const flappyBird:flappyCoordinates = {
@@ -115,20 +146,64 @@ const backGround:backGroundCoordinates = {
         },
 };
 
-function loop(){
-    backGround.draw();//!Desenha primeiro o fundo, depois chão e depois o flappybird
-    ground.draw();//!a ordem importa aqui
-    flappyBird.draw();
+//*Telas
 
-    flappyBird.update();
+let activeScreen:any = {}; //Tela ativa no momento
+function updateScreen(newScreen:object) { //Mudar de tela
+    activeScreen = newScreen //Defini a tela que está ativada no momento
+}
 
+const screens:screensGame = {//Organizando as telas do jogo
+    begin: {
+        draw(){
+            backGround.draw();//!Desenha primeiro o fundo, depois chão e depois o flappybird
+            ground.draw();//!a ordem importa aqui
+            flappyBird.draw();
+            start.draw();//Novo jogo
+        },
+        click(){
+            updateScreen(screens.game)
+        },
+        update(){
+
+        }
+    },
+
+    game:{//rederizando a tela
+        draw(){
+            backGround.draw();//!Desenha primeiro o fundo, depois chão e depois o flappybird
+            ground.draw();//!A ordem importa aqui
+            flappyBird.draw();
+            flappyBird.update();//Queda
+        },
+        update(){
+            
+        } 
+    },
+    end:{
+        draw(){
+            
+        },
+        update(){
+
+        }
+    },
     
+}
 
-
-
-
+function loop(){
+    
+    activeScreen.draw();
     requestAnimationFrame(loop);//Ficar chamando a função, um jogo roda a 60fps, 60 imagens por segundo
 };
 
-loop();//chamando a função
+
+window.addEventListener('click', (e) =>{
+    if(activeScreen.click){
+        activeScreen.click();
+    }
+});
+
+updateScreen(screens.begin)//muda a tela
+loop();//chamando a função loop
 

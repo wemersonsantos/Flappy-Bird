@@ -4,6 +4,22 @@ sprites.src = './sprites/sprites.png';
 console.log('Vamos fazer!!!');
 var canvas = document.querySelector('canvas');
 var context = canvas.getContext('2d');
+//*Chão
+var start = {
+    spriteX: 135,
+    spriteY: 0,
+    width: 175,
+    height: 153,
+    x: (canvas.width / 2) - 174 / 2,
+    y: 50,
+    draw: function () {
+        context.drawImage(sprites, start.spriteX, start.spriteY, //Sprite X e Y 
+        start.width, start.height, //Tamanho do recorte na sprite (Tamanho: largura e altura)
+        start.x, start.y, //Posição no HTML aonde irá aparecer a imagem
+        start.width, start.height //Tamanho da imagem (Tamanho: largura e altura)
+        );
+    },
+};
 //*Flappy
 var flappyBird = {
     spriteX: 0,
@@ -70,12 +86,51 @@ var backGround = {
         );
     },
 };
+//*Telas
+var activeScreen = {}; //Tela ativa no momento
+function updateScreen(newScreen) {
+    activeScreen = newScreen; //Defini a tela que está ativada no momento
+}
+var screens = {
+    begin: {
+        draw: function () {
+            backGround.draw(); //!Desenha primeiro o fundo, depois chão e depois o flappybird
+            ground.draw(); //!a ordem importa aqui
+            flappyBird.draw();
+            start.draw(); //Novo jogo
+        },
+        click: function () {
+            updateScreen(screens.game);
+        },
+        update: function () {
+        }
+    },
+    game: {
+        draw: function () {
+            backGround.draw(); //!Desenha primeiro o fundo, depois chão e depois o flappybird
+            ground.draw(); //!A ordem importa aqui
+            flappyBird.draw();
+            flappyBird.update(); //Queda
+        },
+        update: function () {
+        }
+    },
+    end: {
+        draw: function () {
+        },
+        update: function () {
+        }
+    },
+};
 function loop() {
-    backGround.draw(); //!Desenha primeiro o fundo, depois chão e depois o flappybird
-    ground.draw(); //!a ordem importa aqui
-    flappyBird.draw();
-    flappyBird.update();
+    activeScreen.draw();
     requestAnimationFrame(loop); //Ficar chamando a função, um jogo roda a 60fps, 60 imagens por segundo
 }
 ;
-loop(); //chamando a função
+window.addEventListener('click', function (e) {
+    if (activeScreen.click) {
+        activeScreen.click();
+    }
+});
+updateScreen(screens.begin); //muda a tela
+loop(); //chamando a função loop
