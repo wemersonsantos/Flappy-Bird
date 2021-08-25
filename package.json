@@ -1,0 +1,22 @@
+{
+  "name": "flappy-bird",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wemersonsantos/Flappy-Bird.git"
+  },
+  "author": "José Wêmerson dos Santos",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wemersonsantos/Flappy-Bird/issues"
+  },
+  "homepage": "https://github.com/wemersonsantos/Flappy-Bird#readme",
+  "dependencies": {
+    "typescript": "^4.3.5"
+  }
+}
